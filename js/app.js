@@ -1,13 +1,14 @@
 /*
- * A list that holds all the cards
+ * Create a list that holds all of your cards
  */
-const cardList = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb"];
-let openCards = [];
+
+const cards = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb"];
 let begin = false;
+let openCards = [];
 let moves = 0;
 let count = 0;
 let timeCount = 0;
-let timePtr;
+let timePointer;
 
 /*
  * Display the cards on the page
@@ -18,8 +19,7 @@ let timePtr;
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
+    let currentIndex = array.length, temporaryValue, randomIndex;
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
@@ -27,182 +27,182 @@ function shuffle(array) {
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
     }
-
     return array;
 }
 
-// fetch the class of card
+// get class value from card DOM
 function getCardClass(card) {
     return card[0].firstChild.className;
 }
 
-/* 
-  if the list already has another card, check to see if the two cards     match
-*/
+// check open cards when count = 2
 function checkOpenCards() {
-    if(getCardClass(openCards[0]) === getCardClass(openCards[1])) {
+    /* 
+        display the card's symbol (put this functionality in another function that you call from this one) 
+        add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
+    */
+    if (getCardClass(openCards[0]) === getCardClass(openCards[1])) {
         count++;
-        openCards.forEach(function(card) {
+        openCards.forEach(function (card) {
             card.animateCss('tada', function () {
                 card.toggleClass("open show match");
-              });
+            });
         });
-    } else {
-        openCards.forEach(function(card) {
-            card.animateCss('shake', function() {
+    }
+    /* 
+        if the cards do not match, remove the cards from the list and 
+        hide the card's symbol.
+        (put this functionality in another function that you call from this one)
+    */ 
+    else {
+        openCards.forEach(function (card) {
+            card.animateCss('wobble', function () {
                 card.toggleClass("open show");
             });
         });
     }
-
     openCards = [];
     incMove();
-    if(count === 8) {
+    if (count === 8) {
         end();
     }
-} // end of checkOpenCards
+}
 
-// start and display timer
+// starts the timer
 function timer() {
     timeCount += 1;
     $("#timer").html(timeCount);
-    timePtr = setTimeout(timer, 1000);
+    timerPointer = setTimeout(timer, 1000);
 }
 
-/* 
-    increment the move counter and display it on the page (put this       functionality in another function that you call from this one)
+/*
+    increment the move counter and display it on the page
+    (put this functionality in another function that you call from this one)
 */
-// increment moves
+// increment move count
 function incMove() {
     moves += 1;
     $("#moves").html(moves);
-    if(moves === 14 || moves === 20) {
+    if (moves === 10 || moves === 15) {
         deductStars();
     }
 }
 
+/*
+    Set up the event listener for a card. If a card is clicked:
+*/
 
-/* set up the event listener for a card. */
-// event handler, card is clicked
-function cardClicked(event) {
-    /* If a card is clicked: */
-    // check to see if card is open or already matched.
-    let cardClasses = $(this).attr("class");
-    if(cardClasses.search('open') * cardClasses.search('match') !== 1) {
+function cardClick(event) {
+    // check opened or matched card
+    let classes = $(this).attr("class");
+    if (classes.search('open') * classes.search('match') !== 1) {
         return;
     }
-
-    // start the game if not already
-    if(!begin) {
+    // start the game
+    if (!begin) {
         begin = true;
         timeCount = 0;
-        timePtr = setTimeout(timer, 1000);
-    }
-
-    // flip card
-    /*
-      display the card's symbol (put this functionality in another        function that you call from this one) 
-    */
-    if(openCards.length < 2) {
-        $(this).toggleClass("open show");
-        openCards.push($(this));
+        timePointer = setTimeout(timer, 1000);
     }
     
-    // cards match
-    /*
-      if the cards do match, lock the cards in the open position(put      this functionality in another function that you call from this one)
+    // flip cards on click
+    
+    if (openCards.length < 2) {
+        $(this).toggleClass("open show");
+        openCards.push($(this));
+        
+    }
+    // check if cards match
+    /* 
+        if the list already has another card, check to see if the two cards match 
+        if the cards do match, lock the cards in the open position 
+        (put this functionality in another function that you call from this one)
     */
-    if(openCards.length === 2) {
+    if (openCards.length === 2) {
         checkOpenCards();
     }
 }
 
-// dynamic carads creation
-function createCard(cardClass) {
-    $("ul.deck").append(`<li class = "card"> <i class = "fa ${cardClass}"> </i> </li>`);
+// create individual card element
+function createCards(cardClass) {
+    $("ul.deck").append(`<li class="card"><i class="fa ${cardClass}"></i></li>`);
 }
 
-/* 
-    add the card to a *list* of "open" cards (put this functionality in   another function that you call from this one)
-*/
-// add cards
+// populate cards in DOM
 function addCards() {
-    shuffle(cardList.concat(cardList)).forEach(createCard);
+    shuffle(cards.concat(cards)).forEach(createCards);
 }
 
-// reset
-function resetGame() {
+// reset game
+function reset() {
     $("ul.deck").html("");
     $(".stars").html("");
     moves = -1;
-
     incMove();
-
     begin = false;
     openCards = [];
     timeCount = 0;
     count = 0;
-    
-    // resets the time ptr.
-    clearTimeout(timePtr);
-    
-    // resets the value of timer to 0
+    clearTimeout(timePointer);
     $("#timer").html(0);
-
-    // re-initialize the game
+    // re-setup game
     initGame();
 }
 
-
-/*
-   if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
-*/
+// game completed
 function end() {
-    clearTimeout(timePtr);
-    // stars achieved
+    // stop timer
+    clearTimeout(timePointer);
+
     let stars = $(".fa-star").length;
+    /* 
+        if all cards have matched, display a message with the final score
+        (put this functionality in another function that you call from this one)
+    */
     vex.dialog.confirm({
-        message: `Congratulations! Game completed in: ${timeCount} seconds. Rating: ${stars}/3 stars. Do you want to play another Game?`, callback: function(value) {
-            if(value) {
-                resetGame();
+        message: `Congratulations! Time: ${timeCount} seconds. Rating: ${stars}/3 star. Play again?`,
+        callback: function (value) {
+            if (value) {
+                reset();
             }
         }
     });
 }
 
-// stars
+// initialize stars dynamically
 function initStars() {
     for (let i = 0; i < 3; i++) {
-        $(".stars").append(`<li> <i class = "fa fa-star"> </i> </li>`);
+        $(".stars").append(`<li><i class="fa fa-star"></i></li>`);
     }
 }
 
-// deduct stars as number of moves increases.
+// reduce stars for rating as moves increase
 function deductStars() {
     let stars = $(".fa-star");
     $(stars[stars.length - 1]).toggleClass("fa-star fa-star-o");
 }
 
-// initialize game
+// init game
 function initGame() {
     addCards();
     initStars();
-    $(".card").click(cardClicked);
+    $(".card").click(cardClick);
 }
 
-$(document).ready(function() {
+// using vex to display result and options to continue or break
+$(document).ready(function () {
     initGame();
-    $("#restart").click(resetGame);
+    $("#restart").click(reset);
     vex.defaultOptions.className = 'vex-theme-os';
     vex.dialog.buttons.YES.text = 'Yes! Please.';
     vex.dialog.buttons.NO.text = 'No! Thank you.';
-})
+});
 
-/* https://github.com/daneden/animate.css/#usage */
+// animateCss to make UI more fun to play. Link: https://github.com/daneden/animate.css
 $.fn.extend({
-    animateCss: function(animationName, callback) {
-        let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-        this.addClass('animated ' + animationName).one(animationEnd, function() {
+    animateCss: function (animationName, callback) {
+        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        this.addClass('animated ' + animationName).one(animationEnd, function () {
             $(this).removeClass('animated ' + animationName);
             if (callback) {
                 callback();
@@ -211,7 +211,3 @@ $.fn.extend({
         return this;
     }
 });
-
-/* 
-    if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one) 
-*/
