@@ -10,3 +10,7 @@ The starter files were provided by Udacity under the Front-end Web Developer Nan
 
 1) Download the project.
 2) Click `index.html` to run the app.
+
+
+### External Resources:
+Used: https://github.com/daneden/animate.css for giving a little animation when the decks are clicked.

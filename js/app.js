@@ -1,7 +1,4 @@
-/*
- * Create a list that holds all of your cards
- */
-
+//Create a list that holds all of your cards
 const cards = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt", "fa-cube", "fa-leaf", "fa-bicycle", "fa-bomb"];
 let begin = false;
 let openCards = [];
@@ -72,7 +69,7 @@ function checkOpenCards() {
 function timer() {
     timeCount += 1;
     $("#timer").html(timeCount);
-    timerPointer = setTimeout(timer, 1000);
+    timePointer = setTimeout(timer, 1000);
 }
 
 /*
