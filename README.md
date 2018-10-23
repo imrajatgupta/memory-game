@@ -8,9 +8,13 @@ The starter files were provided by Udacity under the Front-end Web Developer Nan
 
 ## Instructions:
 
-1) Download the project.
-2) Click `index.html` to run the app.
+You can use this web app in two way.
+A) Download and run locally.
+    1) Download the project.
+    2) Double click `index.html` to run the app.
 
+B) Run in the browser directly from the Repository. 
+    https://imrajatgupta.github.io/memory-game/
 
 ### External Resources:
 Used: https://github.com/daneden/animate.css for giving a little animation when the decks are clicked.
