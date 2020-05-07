@@ -14,7 +14,7 @@ A) Download and run locally.
     2) Double click `index.html` to run the app.
 
 B) Run in the browser directly from the Repository. 
-    https://imrajatgupta.github.io/memory-game/
+    https://rjgupta.github.io/memory-game/
 
 ### External Resources:
 Used: https://github.com/daneden/animate.css for giving a little animation when the decks are clicked.
